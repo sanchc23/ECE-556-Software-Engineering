@@ -1,0 +1,164 @@
+plugins {
+    id 'com.android.application'
+    id 'jacoco'
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.example.ultratracker"
+        minSdkVersion 16
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        //testInstrumentationRunner "com.example.anuja.myapplication1.AndroidJacocoTestRunner"
+        // The following argument makes the Android Test Orchestrator run its
+        // "pm clear" command after each test invocation. This command ensures
+        // that the app's state is completely cleared between tests.
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+
+
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+//            testCoverageEnable true
+            testCoverageEnabled = true
+        }
+    }
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    testOptions {
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
+    }
+}
+
+dependencies {
+
+    implementation 'com.github.kizitonwose:CalendarView:1.0.3'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.3.2"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:5.3.2"
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.3.2"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.3.2"
+
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-inline:2.27.0'
+
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test:rules:1.3.0'
+    androidTestUtil 'androidx.test:orchestrator:1.1.0'
+
+    androidTestCompile("com.android.support.test.espresso:espresso-contrib:2.2.2") {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'support-v7'
+        exclude group: 'com.android.support', module: 'design'
+        exclude module: 'support-annotations'
+        exclude module: 'recyclerview-v7'
+    }
+    testImplementation 'org.powermock:powermock-api-mockito:1.6.2'
+
+}
+
+task helloExecution { task ->
+    doLast {
+        println("${project.projectDir}")
+        println("${buildDir}")
+        exec {
+            executable 'ls'
+        }
+    }
+}
+
+task createTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'connectedDebugAndroidTest']) {
+    group "Reporting"
+    description "Generate Jacoco coverage reports."
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+        html.destination file("${rootProject.buildDir}/coverage-report")
+    }
+
+    def fileFilter = ['**/R.class',
+                      '**/R2.class',
+                      '**/R$*.class',
+                      '**/BuildConfig.*',
+                      '**/Manifest*.*',
+                      '**/*Test*.*',
+                      '**/AutoValue_*.*',
+                      '**/*JavascriptBridge.class',
+                      '**/*JsonObjectMapper*.*',
+                      '**/*MembersInjector*.*',
+                      '**/*$InjectAdapter.class',
+                      '**/*$ModuleAdapter.class',
+                      '**/*View.class',
+                      '**/*Activity*.*',
+                      '**/*Fragment*.*',
+                      '**/views/**',
+                      '**/viewholder/**',
+                      '**/viewholders/**',
+                      '**/wrapper/**',
+                      '**/orientation/**',
+                      '**/ktx/**',
+                      '**/decorator/**',
+                      '**/*$ViewInjector*.class',
+                      '**/*$ViewHolder*.class',
+                      '**/*$Viewholder*.class',
+                      '**/*ViewBinding*.*',
+                      '**/Dao*.class',
+                      '**/*Component*.*',
+                      '**/*Module*.*',
+                      '**/*Injector*.*',
+                      'android/**/*.*',
+                      '**/io/**',
+                      '**/apache/**',
+                      '**/sharing/**']
+
+    def javaClasses = fileTree(dir: "$project.buildDir/intermediates/javac/debug", excludes: fileFilter)
+    def kotlinClasses = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
+    def javaSrc = "$project.projectDir/src/main/java"
+    def kotlinSrc = "$project.projectDir/src/main/java"
+    def execution = fileTree(dir: project.buildDir,
+            includes: ['jacoco/testDebugUnitTest.exec', '**/*.ec'])
+
+    sourceDirectories.from(files([javaSrc, kotlinSrc]))
+    classDirectories.from(files([javaClasses, kotlinClasses]))
+
+    print execution
+
+    executionData.from(files(execution))
+
+    doLast() {
+        print "file://${reports.html.destination}/index.html"
+    }
+}
+
+
