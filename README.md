@@ -8,7 +8,7 @@ I worked on a team of 8 engineers, and our project was the UltaTracker, which is
  
 Instructions for Running the UltaTracker:
 
-1. Navigate to the Github repository for the UltaTracker: https://github.com/smingari/UltaTracker
+1. Navigate to the Github repository for the UltaTracker: https://github.com/sanchc23/ECE-556-Software-Engineering
 
 2. Navigate to the Iteration 2 release, found along the right side of the main repository page.  Download the .zip file.  Extract it somewhere to come back to later.
 
