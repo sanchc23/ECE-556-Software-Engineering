@@ -1,6 +1,6 @@
 # Software Engineering
 
-This is the coding work for ECE 556- Software Engineering at UW-Madison.
+This is the coding work for ECE/CS 506- Software Engineering at UW-Madison.
 
 The class was made to mimic an authentic software engineering environment, working on one big project in 2 week agile sprints.
 
