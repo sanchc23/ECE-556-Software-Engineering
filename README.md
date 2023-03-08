@@ -5,6 +5,8 @@ This is the coding work for ECE 556- Software Engineering at UW-Madison.
 The class was made to mimic an authentic software engineering environment, working on one big project in 2 week agile sprints.
 
 I worked on a team of 8 engineers, and our project was the UltaTracker, which is an Android application that is meant to serve as a Health/Exercise tracker and a planner simultaneously.  
+
+Taken in the Spring of 2021.
  
 Instructions for Running the UltaTracker:
 
